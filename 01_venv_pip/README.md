@@ -39,3 +39,18 @@ pip list
 ## Notes
 - The `venv/` folder should NEVER be committed to Git.
 - Instead, we commit a `requirements.txt` file (to be covered later).
+
+## Saving & Restoring Dependencies
+
+### Save (freeze)
+```bash
+pip freeze > requirements.txt
+```
+
+### Restore
+```bash
+pip install -r requirements.txt
+```
+
+### Example
+After installing `requests` and running freeze, requirements.txt includes requests and its dependencies (urllib3, certifi, ...). This file replaces committing the venv/ folder.

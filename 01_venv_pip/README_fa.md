@@ -39,3 +39,18 @@ pip list
 ## نکات
 - پوشه venv/ رو نباید توی Git commit کرد.
 - به جاش فایل requirements.txt رو commit می‌کنیم (بعداً یاد می‌گیریم).
+
+## ذخیره و بازسازی وابستگی‌ها
+
+### ذخیره (freeze)
+```bash
+pip freeze > requirements.txt
+```
+
+### بازسازی محیط
+```bash
+pip install -r requirements.txt
+```
+
+### مثال
+با نصب `requests` و اجرای freeze، فایل requirements.txt شامل خود requests و وابستگی‌هایش (urllib3, certifi, ...) شد. این فایل جایگزین commit کردن پوشه venv/ است.
