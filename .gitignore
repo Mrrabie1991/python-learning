@@ -216,5 +216,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-notes.md
-KEY_INSIGHTS.md
+
