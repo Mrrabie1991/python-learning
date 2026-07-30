@@ -19,5 +19,5 @@ print(f"a: {a}")  # [1, 2, 3, 4, 5]
 print(f"c: {c}")  # [1, 2, 3, 4] — unaffected
 
 print(f"id(a): {id(a)}")
-print(f"id(c): {id(c)}")  # Same id — they ARE the same object
+print(f"id(c): {id(c)}")  # Different IDs mean a and c refer to two separate objects, not the same one
 print(f"a is c: {a is c}")  # False
