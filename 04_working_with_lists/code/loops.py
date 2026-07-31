@@ -19,5 +19,6 @@ for i in range(5):
     print(i)  # 0, 1, 2, 3, 4
 
 # range(start, stop, step)
+# like for (int i = 2; i < 10; i += 2)
 for i in range(2, 10, 2):
     print(i)  # 2, 4, 6, 8

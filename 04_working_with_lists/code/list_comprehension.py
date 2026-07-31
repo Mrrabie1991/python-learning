@@ -15,14 +15,14 @@ print(f"Evens: {evens}")  # [2, 4]
 labels = ["even" if n % 2 == 0 else "odd" for n in nums]
 print(f"Labels: {labels}")  # ['odd', 'even', 'odd', 'even', 'odd']
 
-# ---- Nested loops — ترکیب دو لیست ----
+# ---- Nested loops — cartesian product of two lists ----
 colors = ["red", "blue"]
 objects = ["car", "bike"]
 combinations = [f"{c} {o}" for c in colors for o in objects]
 print(f"Combinations: {combinations}")
 # ['red car', 'red bike', 'blue car', 'blue bike']
 
-# ---- Calling functions ----
+# ---- Calling functions on elements ----
 names = ["ALICE", "BOB", "CHARLIE"]
 lower = [name.lower() for name in names]
 print(f"Lower: {lower}")  # ['alice', 'bob', 'charlie']

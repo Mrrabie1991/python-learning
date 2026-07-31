@@ -15,7 +15,7 @@ print(f"point[0]: {point[0]}, point[1]: {point[1]}")
 # ---- Immutable — cannot modify ----
 # point[0] = 5  # ERROR — tuple is immutable
 
-# ---- Unpacking — تجزیه به متغیرها ----
+# ---- Unpacking — decomposing into variables ----
 x, y = point
 print(f"x = {x}, y = {y}")
 
