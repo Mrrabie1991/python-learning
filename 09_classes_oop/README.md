@@ -584,3 +584,144 @@ print(robot.perform_action())  # Flying
 
 ### Q: Why doesn't Python have true `private`?
 **A:** Python's philosophy is "We are all consenting adults" — it trusts the programmer. `__` (name mangling) is designed to prevent name collisions in inheritance, not for security. This philosophy accepts flexibility at the cost of some compile-time guarantees.
+
+
+---
+
+# Appendix to README.md Chapter 09
+
+## Composition vs Inheritance — Modular Architecture
+
+### The Problem with Inheritance
+
+Inheritance creates an **is-a** relationship. This relationship is rigid, and as capabilities grow, the number of classes explodes:
+
+```python
+class Robot:
+    def move(self):
+        print("Moving...")
+
+class FlyingRobot(Robot):
+    def fly(self):
+        print("Flying...")
+
+class SwimmingRobot(Robot):
+    def swim(self):
+        print("Swimming...")
+
+# What if we need a robot that both flies AND swims?
+# class FlyingSwimmingRobot(Robot): ... — another new class needed
+# This is Combinatorial Explosion
+```
+
+### The Solution: Composition
+
+Composition creates a **has-a** relationship. Behaviors are injected into the class as swappable components:
+
+```python
+# Behaviors as independent classes — each one a capability
+class WalkBehavior:
+    def move(self):
+        return "Walking forward..."
+
+class FlyBehavior:
+    def move(self):
+        return "Flying high!"
+
+class SwimBehavior:
+    def move(self):
+        return "Swimming deep!"
+
+# Robot is a platform — behavior is injected from the outside
+class Robot:
+    def __init__(self, name, movement):
+        self.name = name
+        self.movement = movement  # Composition: Robot HAS-A movement
+
+    def move(self):
+        return f"{self.name}: {self.movement.move()}"
+
+# Assemble robots with any combination — no new classes needed
+ground_robot = Robot("R1", WalkBehavior())
+flying_robot = Robot("R2", FlyBehavior())
+swimming_robot = Robot("R3", SwimBehavior())
+
+print(ground_robot.move())   # R1: Walking forward...
+print(flying_robot.move())   # R2: Flying high!
+print(swimming_robot.move()) # R3: Swimming deep!
+
+# Runtime upgrade — change behavior without modifying the Robot class
+ground_robot.movement = FlyBehavior()  # Now it flies
+```
+
+### Advantages of Composition
+
+- **Flexibility:** Behaviors combine like Lego blocks — without modifying the core class code.
+- **Loose Coupling:** The Robot class is not tied to any specific implementation — it only requires that the behavior has a `move()` method.
+- **Testability:** Each behavior can be tested independently.
+- **Runtime Upgradability:** An instance's behavior can be swapped during execution.
+
+### Connection to Plugin-Based Architecture and Strategy Pattern
+
+Both Plugin-Based Architecture and the Strategy Pattern leverage Composition:
+
+- **Strategy Pattern:** The behavior (Strategy) is defined as a separate object and injected into the Context. The Context knows only the interface, not the implementation.
+- **Plugin Architecture:** The system has a Core that defines only interfaces. Capabilities are added as plugins — without modifying the core code.
+
+```python
+# Plugin Architecture using Composition
+
+class RobotCore:
+    """Robot core — knows only interfaces."""
+    
+    def __init__(self):
+        self.movement_plugin = None
+        self.sensor_plugin = None
+    
+    def load_movement(self, plugin):
+        """Any plugin with move()."""
+        self.movement_plugin = plugin
+    
+    def load_sensor(self, plugin):
+        """Any plugin with read()."""
+        self.sensor_plugin = plugin
+    
+    def operate(self):
+        data = self.sensor_plugin.read()
+        self.movement_plugin.move()
+
+# Plugins — anyone can write them, no changes to RobotCore
+class Wheels:
+    def move(self):
+        return "Moving on wheels"
+
+class Propellers:
+    def move(self):
+        return "Flying with propellers"
+
+class Camera:
+    def read(self):
+        return "Camera image"
+
+class Lidar:
+    def read(self):
+        return "Lidar point cloud"
+
+# Assemble and upgrade without touching RobotCore
+robot = RobotCore()
+robot.load_movement(Wheels())
+robot.load_sensor(Camera())
+robot.operate()
+
+# Upgrade to flying robot with better sensor
+robot.load_movement(Propellers())
+robot.load_sensor(Lidar())
+robot.operate()
+```
+
+### The Golden Rule
+
+- **Inheritance** for **is-a** (identity): `class IndustrialRobot(Robot):` — IndustrialRobot **is a** type of Robot.
+- **Composition** for **has-a** (capabilities): `self.movement = Wheels()` — Robot **has a** movement capability.
+
+In the real world, a combination of both is typically used: Inheritance for defining identity and Composition for defining capabilities.

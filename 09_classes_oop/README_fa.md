@@ -586,3 +586,144 @@ print(robot.perform_action())  # Flying
 
 ### سوال: چرا پایتون `private` واقعی ندارد؟
 **پاسخ:** فلسفه پایتون "We are all consenting adults" است — به برنامه‌نویس اعتماد می‌کند. `__` (name mangling) برای جلوگیری از تصادم نام‌ها در وراثت طراحی شده، نه برای امنیت. این فلسفه انعطاف‌پذیری را به قیمت از دست دادن برخی تضمین‌های زمان کامپایل می‌پذیرد.
+
+---
+
+# بخش الحاقی به README_fa.md فصل ۰۹
+
+## Composition vs Inheritance — معماری ماژولار
+
+### مشکل Inheritance
+
+وراثت رابطه **is-a** (یک ... هست) می‌سازد. این رابطه صلب است و با افزایش قابلیت‌ها، تعداد کلاس‌ها از کنترل خارج می‌شود:
+
+```python
+class Robot:
+    def move(self):
+        print("Moving...")
+
+class FlyingRobot(Robot):
+    def fly(self):
+        print("Flying...")
+
+class SwimmingRobot(Robot):
+    def swim(self):
+        print("Swimming...")
+
+# اگر رباتی بخواهیم که هم پرواز کند هم شنا:
+# class FlyingSwimmingRobot(Robot): ... — کلاس جدید لازم است
+# این یعنی انفجار ترکیبی (Combinatorial Explosion)
+```
+
+### راه‌حل: Composition
+
+[فارسی] Composition رابطه **has-a** (یک ... دارد) می‌سازد. رفتارها به‌عنوان اجزای قابل تعویض به کلاس تزریق می‌شوند:
+
+```python
+#[Farsi]
+# رفتارها به‌عنوان کلاس‌های مستقل — هر کدام یک قابلیت
+class WalkBehavior:
+    def move(self):
+        return "Walking forward..."
+
+class FlyBehavior:
+    def move(self):
+        return "Flying high!"
+
+class SwimBehavior:
+    def move(self):
+        return "Swimming deep!"
+
+# ربات یک پلتفرم است — رفتار از بیرون تزریق می‌شود
+class Robot:
+    def __init__(self, name, movement):
+        self.name = name
+        self.movement = movement  # Composition: Robot HAS-A movement
+
+    def move(self):
+        return f"{self.name}: {self.movement.move()}"
+
+# مونتاژ ربات‌ها با ترکیب‌های دلخواه — بدون نوشتن کلاس جدید
+ground_robot = Robot("R1", WalkBehavior())
+flying_robot = Robot("R2", FlyBehavior())
+swimming_robot = Robot("R3", SwimBehavior())
+
+print(ground_robot.move())   # R1: Walking forward...
+print(flying_robot.move())   # R2: Flying high!
+print(swimming_robot.move()) # R3: Swimming deep!
+
+# ارتقا در زمان اجرا — تغییر رفتار بدون تغییر کلاس Robot
+ground_robot.movement = FlyBehavior()  # حالا پرواز می‌کند
+```
+
+### مزایای Composition
+
+- **انعطاف‌پذیری:** رفتارها مانند قطعات لگو ترکیب می‌شوند — بدون تغییر کد کلاس اصلی.
+- **[فارسی] Coupling کمتر:** کلاس Robot به پیاده‌سازی خاصی وابسته نیست — فقط کافی است رفتار یک متد `move()` داشته باشد.
+- **تست‌پذیری:** هر رفتار را می‌توان جداگانه تست کرد.
+- **ارتقا در زمان اجرا:** رفتار یک نمونه را می‌توان در حین اجرا تغییر داد.
+
+### ارتباط با Plugin-Based Architecture و Strategy Pattern
+
+[فارسی] Plugin-Based Architecture و Strategy Pattern هر دو از Composition استفاده می‌کنند:
+
+- **[فارسی] Strategy Pattern:** رفتار (Strategy) به‌عنوان یک شیء مجزا تعریف و به Context تزریق می‌شود. Context فقط اینترفیس را می‌شناسد، نه پیاده‌سازی.
+- **[فارسی] Plugin Architecture:** سیستم یک هسته (Core) دارد که فقط اینترفیس‌ها را تعریف می‌کند. قابلیت‌ها به‌عنوان پلاگین اضافه می‌شوند — بدون تغییر کد هسته.
+
+```python
+# Plugin Architecture با استفاده از Composition
+
+class RobotCore:
+    """هسته ربات — فقط اینترفیس‌ها را می‌شناسد."""
+    
+    def __init__(self):
+        self.movement_plugin = None
+        self.sensor_plugin = None
+    
+    def load_movement(self, plugin):
+        """هر پلاگینی که move() داشته باشد."""
+        self.movement_plugin = plugin
+    
+    def load_sensor(self, plugin):
+        """هر پلاگینی که read() داشته باشد."""
+        self.sensor_plugin = plugin
+    
+    def operate(self):
+        data = self.sensor_plugin.read()
+        self.movement_plugin.move()
+
+# پلاگین‌ها — هر کسی می‌تواند بنویسد، بدون تغییر RobotCore
+class Wheels:
+    def move(self):
+        return "Moving on wheels"
+
+class Propellers:
+    def move(self):
+        return "Flying with propellers"
+
+class Camera:
+    def read(self):
+        return "Camera image"
+
+class Lidar:
+    def read(self):
+        return "Lidar point cloud"
+
+# مونتاژ و ارتقا بدون تغییر RobotCore
+robot = RobotCore()
+robot.load_movement(Wheels())
+robot.load_sensor(Camera())
+robot.operate()
+
+# ارتقا به ربات پرنده با سنسور بهتر
+robot.load_movement(Propellers())
+robot.load_sensor(Lidar())
+robot.operate()
+```
+
+### قانون طلایی
+
+- **[فارسی] Inheritance** برای رابطه **is-a** (چیستی): `class IndustrialRobot(Robot):` — IndustrialRobot **یک نوع** Robot است.
+- **[فارسی] Composition** برای رابطه **has-a** (قابلیت‌ها): `self.movement = Wheels()` — Robot **یک** قابلیت حرکت **دارد**.
+
+در دنیای واقعی، معمولاً ترکیبی از هر دو استفاده می‌شود: Inheritance برای تعریف هویت (identity) و Composition برای تعریف قابلیت‌ها (capabilities).
