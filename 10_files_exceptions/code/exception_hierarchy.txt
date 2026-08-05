@@ -1,0 +1,18 @@
+BaseException
+├── SystemExit
+├── KeyboardInterrupt
+├── GeneratorExit
+└── Exception
+    ├── StopIteration
+    ├── ArithmeticError
+    │   ├── ZeroDivisionError
+    │   └── OverflowError
+    ├── LookupError
+    │   ├── IndexError
+    │   └── KeyError
+    ├── TypeError
+    ├── ValueError
+    ├── OSError
+    │   ├── FileNotFoundError
+    │   └── PermissionError
+    └── RuntimeError
