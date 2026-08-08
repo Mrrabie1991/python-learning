@@ -1,0 +1,20 @@
+black==26.5.1
+certifi==2026.7.22
+charset-normalizer==3.4.9
+click==8.4.2
+colorama==0.4.6
+idna==3.18
+iniconfig==2.3.0
+-e git+ssh://git@github.com/Mrrabie1991/python-learning.git@26a70152c5a20123807996d49f0d287804239f0f#egg=my_robot&subdirectory=11_modules_packages\code\my_robot_project
+mypy_extensions==1.1.0
+numpy==2.5.1
+packaging==26.3
+pathspec==1.1.1
+platformdirs==4.11.1
+pluggy==1.6.0
+Pygments==2.20.0
+pytest==9.1.1
+pytokens==0.4.1
+requests==2.34.2
+setuptools==83.0.0
+urllib3==2.7.0
