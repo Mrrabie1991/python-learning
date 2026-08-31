@@ -160,7 +160,7 @@ print(ali.is_adult)  # True — computed property بدون پرانتز
 **چرا `@property` پایتونیک است؟**
 - خوانایی: `ali.age = 30` طبیعی‌تر از `ali.set_age(30)` است.
 - می‌توان بعداً getter/setter اضافه کرد بدون تغییر کد بیرونی.
-- computed propertyها بدون پرانتز قابل دسترسی هستند.
+- [فارسی] computed propertyها بدون پرانتز قابل دسترسی هستند.
 
 ---
 
@@ -467,9 +467,9 @@ print(c.describe())  # Shape with area=78.53975, perimeter=31.4159
 
 ---
 
-## Dataclass — کلاس‌های داده ساده (Python 3.7+)
+## [فارسی] Dataclass — کلاس‌های داده ساده (Python 3.7+)
 
-`dataclass` خودکار `__init__`, `__repr__`, `__eq__` و متدهای دیگر را تولید می‌کند. معادل `struct` در C++ است.
+[فارسی] `dataclass` خودکار `__init__`, `__repr__`, `__eq__` و متدهای دیگر را تولید می‌کند. معادل `struct` در C++ است.
 
 ```python
 from dataclasses import dataclass
